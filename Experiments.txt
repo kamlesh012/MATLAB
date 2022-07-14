@@ -1,0 +1,695 @@
+%PLOTTING THE SOLUTION OF FIRST ORDER ODE
+
+syms y(x)
+f=diff(y,x)==cos(8*x)+x^2;
+c=y(0)==-1;
+dsolve(f,c)
+f1=@(x,y)(cos(8*x)+x^2);
+[x,y]=ode45(f1,[0 1],-1);
+plot(x,y,'o-);xlabel('x');ylabel('y');title('solutionoffirstode')
+
+ans =
+sin(8*x)/8 + x^3/3 – 1
+
+
+
+
+
+
+
+%PLOTTING OF SECOND ORDER ODE
+function dydx=fun(x,y)
+dydx=zeros(2,1);
+dydx(1)=y(2);
+dydx(2)=20-7*y(2)-10*y(1);
+end
+ 
+%Analytical Solution
+syms y(x)
+a=diff(y,x,1)
+f=diff(y,x,2)+7*diff(y,x,1)+10*x==20
+f2=y(0)==5
+f3=a(0)==3
+ dsolve(f,f2,f3)
+ 
+ %Numerical Solution
+ [x,y]=ode45(@fun,[0 5],[5 3]);
+ plot(x,y(:,1),'-',x,y(:,2),'*');
+ xlabel('X-axis');
+ ylabel('Y-axis');
+ title('Second Order Derivative')
+ 
+
+ans = (sym)
+
+      2                     -7⋅x
+           5⋅x    150⋅x   1712   3⋅ℯ    
+  y(x) = - ──── + ───── + ──── 
+            7       49    343      343  
+
+
+
+
+
+
+
+
+
+
+%Predatory-Prey Model
+
+function dxdt=fun(t,x)
+dxdt=zeros(2,1)
+a=1
+b=0.01
+c=1
+d=0.02
+dxdt(1)=a*x(1)-b*x(1)*x(2)
+dxdt(2)=d*x(1)*x(2)-c*x(2)
+end
+
+ %Analytical Solution
+ syms x(t) y(t) a b c d
+f=diff(x,t,1)==a*x-b*x*y
+f2=x(0)==100
+dsolve(f,f2)
+f3=diff(y,t,1)==d*x*y-c*y
+ f4=y(0)==50
+dsolve(f3,f4)
+
+
+
+%Numerical Solution
+[t x]=ode45(@fun,[0 12],[100 50])
+plot(t,x,'-')
+xlabel("X")
+ylabel("Y")
+title("PREY PREDATOR MODEL")
+
+
+
+ans = (sym)
+                0                           
+                ⌠                           
+              b⋅⎮ y(t) dt          ⌠        
+                ⌡          a⋅t - b⋅⎮ y(t) dt
+                                   ⌡        
+  x(t) = 100⋅ℯ           ⋅ℯ                 
+
+f3 = (sym)
+
+  d                               
+  ──(y(t)) = -c⋅y(t) + d⋅x(t)⋅y(t)
+  dt                              
+
+f4 = (sym) y(0) = 50
+ans = (sym)
+
+                0                            
+                ⌠                            
+             -d⋅⎮ x(t) dt           ⌠        
+                ⌡          -c⋅t + d⋅⎮ x(t) dt
+                                    ⌡        
+  y(t) = 50⋅ℯ            ⋅ℯ   
+
+
+
+%DECAY MODEL
+function dpdt=func(t,p)
+dpdt=zeros(1,1);r=0.50;
+dpdt(1)=-r*p;
+end
+
+syms p(t) r
+s=dsolve(diff(p,t)==-r*p,p(0)==1000)
+[t,p]=ode45(@func,[0 7],1000);
+plot(t,p,'.');
+xlabel('time');
+ylabel('population');
+title('decaymodel');
+s=1000*exp(-r*t)
+
+
+
+%GROWTH MODEL
+function dpdt=func(t,p)
+dpdt=zeros(1,1);
+r=0.50;
+dpdt(1)=r*p;
+end
+
+syms p(t) r
+s=dsolve(diff(p,t)==r*p,p(0)==1000)
+[t,p]=ode45(@func,[0 7],1000);
+plot(t,p,'-');
+xlabel('time');
+ylabel('population');
+title('GROWTH MODEL');
+s=1000*exp(-r*t)
+
+
+
+
+%Population growth with harvesting
+
+function dxdt=fun(t,x)
+dxdt=zeros(1,1);
+r=1;
+h=9/10;
+k=10;
+dxdt(1)=r*x*(1-x/k)-h;
+end
+
+%Analytical solution
+
+syms x(t) r h k
+f=diff(x,t,1)==r*x*(1-(x/k))-h;
+f1=x(0)==2;
+dsolve(f,f1)
+
+
+
+%Numerical solution
+[t,x]=ode45(@fun,[0,4],2);
+plot(t,x);
+xlabel("time");
+ylabel("pollution");
+title("pollution growth with harvesting")
+
+
+ans =
+ 
+(k*r - 2*tan((t*(h*k*r - (k^2*r^2)/4)^(1/2) - k*atan((4*r - k*r)/(2*(h*k*r - (k^2*r^2)/4)^(1/2))))/k)*(h*k*r - (k^2*r^2)/4)^(1/2))/(2*r)
+
+
+
+
+
+
+
+%Population growth without harvesting
+
+function dxdt=fun(t,x)
+dxdt=zeros(1,1);
+r=1;
+k=10;
+dxdt(1)=r*x*(1-x/k);
+end
+
+%Analytical solution
+syms x(t) r  k
+f=diff(x,t,1)==r*x*(1-(x/k));
+f1=x(0)==2;
+dsolve(f,f1)
+
+
+
+
+
+%Numerical solution
+[t,x]=ode45(@fun,[0,10],2);
+plot(t,x);
+xlabel("Time");
+ylabel("Pollution");
+title("Pollution growth with Harvesting")
+
+
+ans =
+ 
+-k/(exp(log(1 - k/2) - r*t) - 1)
+
+
+
+
+
+
+
+
+%SINGLE COLD PILL
+
+function dxdt=fun(t,x)
+dxdt=zeros(2,1)
+k1=1.3860
+k2=0.1386
+dxdt(1)=-k1*x(1)
+dxdt(2)=k1*x(1)-k2*x(2)
+end
+
+ %Analytical Solution
+ syms x(t) y(t) k1 k2
+f=diff(x,t,1)==-k1*x
+f2=x(0)==2
+dsolve(f,f2)
+f3=diff(y,t,1)==k1*x-k2*y
+f4=y(0)==0
+dsolve(f3,f4)
+
+%Numerical Solution
+[t x]=ode45(@fun,[0 4],[2 0])
+plot(t,x,'-')
+xlabel("Time")
+ylabel("Pill")
+title("SINGLE COLD PILL")
+
+
+ans = (sym)
+            -k₁⋅t
+  x(t) = 2⋅ℯ     
+ans = (sym)
+
+         ⎛                        0              ⎞       
+         ⎜   ⌠                    ⌠              ⎟       
+         ⎜   ⎮       k₂⋅t         ⎮       k₂⋅t   ⎟  -k₂⋅t
+  y(t) = ⎜k₁⋅⎮ x(t)⋅ℯ     dt - k₁⋅⎮ x(t)⋅ℯ     dt⎟⋅ℯ     
+         ⎜   ⌡                    ⌡              ⎟       
+         ⎝                                       ⎠    
+
+%COURSE OF COLD PILL
+
+function dxdt=fun(t,x)
+dxdt=zeros(2,1)
+k1=1.3860
+k2=0.1386
+I=100
+dxdt(1)=I-k1*x(1)
+dxdt(2)=I-k1*x(1)-k2*x(2)
+end
+
+ %Analytical Solution
+ syms x(t) y(t) k1 k2 I
+f=diff(x,t,1)==I-k1*x
+f2=x(0)==2
+dsolve(f,f2)
+f3=diff(y,t,1)==I-k1*x-k2*y
+f4=y(0)==0
+dsolve(f3,f4)
+
+%Numerical Solution
+[t x]=ode45(@fun,[0 4],[2 0])
+plot(t,x,'-')
+xlabel("Time")
+ylabel("Pill")
+title("COURSE OF COLD PILL")
+
+ans = (sym)
+                 ⎛     log(-I + 2⋅k₁)⎞
+              k₁⋅⎜-t + ──────────────⎟
+                 ⎝           k₁      ⎠
+         I + ℯ                        
+  x(t) =        k₁             
+         
+  
+
+
+
+%BATTLE MODEL
+
+function dxdt=fun(t,x)
+dxdt=zeros(3,1);
+a1=0.2;  a2=0.5;  b1=0.7;  b2=0.4;  c1=0.8;  c2=1;
+dxdt(1)=-a1*x(2)-a2*x(3);
+dxdt(2)=-b1*x(1)-b2*x(3);
+dxdt(3)=-c1*x(2)-c2*x(1);
+ end
+
+% Analytical Solution
+syms  x(t)  y(t)  z(t)  a1  a2  b1  b2  c1  c2
+f=diff(x,t,1)==-a1*y-a2*z;
+g=x(0)==100;
+h=dsolve(f,g)
+i=diff(y,t,1)==-b1*x-b2*z;
+j=y(0)==100;
+k=dsolve(i,j)
+l=diff(z,t,1)==-c1*x-c2*y;
+m=z(0)==100;
+n=dsolve(l,m)
+
+% Numerical Solution
+[t x]=ode45(@fun,[0 10],[100 100 100]);
+plot(t,x,'o-');
+xlabel('Time');
+ylabel('Population Size');
+title('Battle Model');
+
+h = (sym)
+
+            0              0                                         
+            ⌠              ⌠           ⌠                             
+  x(t) = a₁⋅⎮ y(t) dt + a₂⋅⎮ z(t) dt - ⎮ (a₁⋅y(t) + a₂⋅z(t)) dt + 100
+            ⌡              ⌡           ⌡                             
+                                                                     
+
+
+k = (sym)
+
+            0              0                                         
+            ⌠              ⌠           ⌠                             
+  y(t) = b₁⋅⎮ x(t) dt + b₂⋅⎮ z(t) dt - ⎮ (b₁⋅x(t) + b₂⋅z(t)) dt + 100
+            ⌡              ⌡           ⌡                             
+                                                                     
+
+n = (sym)
+
+            0              0                                         
+            ⌠              ⌠           ⌠                             
+  z(t) = c₁⋅⎮ x(t) dt + c₂⋅⎮ y(t) dt - ⎮ (c₁⋅x(t) + c₂⋅y(t)) dt + 100
+            ⌡              ⌡           ⌡                             
+
+
+
+
+%FIBONACCI SERIES
+
+for i=[3:10];
+ c(1)=1;
+ c(2)=1;
+ c(i)=c(i-2)+c(i-1);
+ end
+disp(c)
+plot(c,'-')
+
+
+
+
+
+
+
+
+
+
+%  Sequence formation(i) [1/5, 4/5, 9/5......]
+for i=[3:12];
+c(1)=1/5;
+c(2)=4/5;
+c(i)=((i)^2)/5;
+end
+disp(c)
+plot(c,'-')
+
+% Sequence formation(ii)[1, 5, 17, 53, ..]
+for i=[3:10];
+    c(1)=1;
+    c(2)=5;
+    c(i)=3*c(i-1)+2;
+end
+disp(c)
+ 
+plot(c,'--') 
+[1, 5, 17, 53, 161, 485, 1457, 4373, 13121, 39365, 121/5, 144/5]
+%De-Ambert test for series
+
+count=0; c=0;
+for n=1:10
+ an(n)=1/(n+1);
+ ap(n)=1/n;
+ if (an(n)/ap(n)<1)
+ count=count+1;
+ elseif(an(n)/ap(n)>1)
+ c=c+1;
+ end
+ fprintf('%s',rats(ap(n)))
+ end
+plot(ap);
+if(count==0)
+ fprintf('\nConvergent')
+ elseif(c==0)
+ fprintf('\ndivergent')
+ else
+ fprintf('\nTest fail')
+end 
+
+ 1            1/2           1/3           1/4           1/5           1/6           1/7           1/8           1/9           1/10    
+Divergent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%Star Patterns
+
+%(i)
+for i=1:5
+for j=1:i
+fprintf('* ');
+end
+fprintf('\n');
+end
+
+*
+* *
+* * *
+* * * *
+* * * * *
+
+%(ii)
+
+for i=1:5
+for j=i:4
+fprintf(' ');
+end
+for k=1:i
+fprintf('* ');
+end
+fprintf('\n');
+end
+
+ *
+ * *
+ * * *
+ * * * *
+* * * * *
+
+%(iii)
+
+for i=1:5
+for j=i:5
+fprintf('* ');
+end
+for k=2:i
+fprintf(' ');
+end
+fprintf('\n');
+end
+
+* * * * *
+* * * *
+* * *
+* *
+*
+
+%(iv)
+
+for i=1:5
+for k=2:i
+fprintf(' ');
+end
+for j=i:5
+fprintf('* ');
+end
+fprintf('\n');
+end
+
+* * * * *
+ * * * *
+ * * *
+ * *
+ *
+
+%(v)
+
+for i=1:5
+for j=i:4
+fprintf(' ');
+end
+for k=1:2*i-1
+fprintf('* ');
+end
+fprintf('\n');
+end
+for i=1:5
+for j=1:i
+fprintf(' ');
+end
+for k=1:9-2*i
+fprintf('* ');
+end
+fprintf('\n');
+end
+        *
+      * * *
+    * * * * *
+  * * * * * * * 
+* * * * * * * * * 
+  * * * * * * * 
+    * * * * *
+      * * *
+        * 
+
+
+%(vi)
+
+for i=1:5
+for k=2:i
+fprintf(' ');
+end
+for j=1:5
+fprintf('* ');
+end
+fprintf('\n');
+end
+
+* * * * *
+   * * * * *
+       * * * * *
+          * * * * *
+             * * * * *
+
+%(vii)
+
+for i=1:5
+for j=i:4
+fprintf(' ');
+end
+for k=1:5
+fprintf('* ');
+end
+fprintf('\n');
+end
+
+        * * * * *
+      * * * * *
+    * * * * *
+  * * * * *
+* * * * *
+
+%Arrow Shape
+
+for i=1:5
+ for j=1:i
+ fprintf(' ')
+ end
+ for k=1:i
+ fprintf('*')
+ end
+ fprintf('\n')
+end
+for i=1:5
+ for j=1:5-i
+ fprintf(' ')
+ end
+ for k=1:5-i
+ fprintf('*')
+ end
+ fprintf('\n')
+end
+ 
+
+ *
+  **
+   ***
+    ****
+     *****
+    ****
+   ***
+  **
+ *
+
+%Cauchy's test for series
+
+count=0;
+c=0;
+for n=1:10
+ an(n)=1/n;
+ ap(n)=2*n;
+ if (ap(n).^an(n)<1)
+ count=count+1;
+ elseif(ap(n).^an(n)>1)
+ c=c+1;
+ end
+ fprintf('%d ',ap(n))
+ end
+plot(ap);
+if(count==0)
+ fprintf('\nConvergent')
+ elseif(c==0)
+ fprintf('\ndivergent')
+ else
+ fprintf('\nTest fail')
+end
+
+2 4 6 8 10 12 14 16 18 20 
+Convergent
+
+
+%Epidemic Model
+
+%Analytical Solution
+
+syms S(t) I(t) R(t) N a b
+f1=diff(S,t)==(-a*S*I)/N
+f2=S(0)==997
+dsolve(f1,f2)
+f3=diff(I,t)==(a*S*I)/N-b*I
+f4=I(0)==3
+dsolve(f3,f4)
+f5=diff(R,t)==b*I
+f6=R(0)==0
+dsolve(f5,f6)
+
+%Numerical Solution
+
+[t S]=ode45(@epidemic,[0 100],[997 3 0]);
+plot(t,S(:,1),'.-',t,S(:,2),'*-',t,S(:,3),'o-');
+xlabel('Time');ylabel('SIR');title('Epidemic Model');
+legend('Susceptible','Infected','Recovered');
+
+function dSdt=epidemic(t,S)
+dSdt=zeros(3,1);
+N=1000;
+a=0.4;
+b=0.04;
+dSdt(1)=(-a*S(1)*S(2))/N;
+dSdt(2)=(a*S(1)*S(2))/N-b*S(2);
+dSdt(3)=b*S(2);
+end
+
+ans = (sym)
+
+                               0        
+                               ⌠        
+                 ⌠           a⋅⎮ I(t) dt
+              -a⋅⎮ I(t) dt     ⌡        
+                 ⌡                      
+              ─────────────  ───────────
+                    N             N     
+  S(t) = 997⋅ℯ             ⋅ℯ           
+
+ans = (sym)
+
+               0                             
+               ⌠                             
+            -a⋅⎮ S(t) dt            ⌠        
+               ⌡                  a⋅⎮ S(t) dt
+                                    ⌡        
+            ─────────────  -b⋅t + ───────────
+                  N                    N     
+  I(t) = 3⋅ℯ             ⋅ℯ                  
+
+
+ans = (sym)
+
+                         0        
+           ⌠             ⌠        
+  R(t) = b⋅⎮ I(t) dt - b⋅⎮ I(t) dt
+           ⌡             ⌡        
+
+
